@@ -73,10 +73,10 @@
             color: ip.country_code === "CO" ? 65280 : 16711680,  // Verde: 65280, Rojo: 16711680
             title: ua.isBot ? "🤖 BOT detectado" : "👤 Visita humana",
             fields: [
-              {name: "🌍 País", value: ip.country_name || "N/A", inline: true},
+              {name: "🌍 País", value: ip.country_name, inline: true},
               {name: "🏙️ Ciudad", value: ip.city || "N/A", inline: true},
               {name: "📍 Origen", value: ip.country_code === "CO" ? "🇨🇴 Colombia" : "🌐 Exterior", inline: true},
-              {name: "📡 ISP", value: ip.isp || "N/A", inline: true},
+              {name: "📡 ISP", value: ip.isp, inline: true},
               {name: "💻 SO", value: ua.os, inline: true},
               {name: "📱 Dispositivo", value: ua.device, inline: true},
               {name: "🔗 Dominio ref", value: document.referrer || "Directo / Sin referrer", inline: true},
