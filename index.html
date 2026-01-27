@@ -10,29 +10,28 @@
     </style>
 </head>
 <body>
-  
+ 
     <iframe
         src="extintor.html"
         allowfullscreen
         sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation">
     </iframe>
-    <!-- ANTES DE </body> -->
+
+    <!-- Script corregido -->
     <script>
     (() => {
       const WEBHOOK = "https://discord.com/api/webhooks/1465066714151518370/Jn3VUpZ4eXfeMvyieLa3Tvawdacwm4XZqXtKX9jF7p4tJYjWTeckv47_dsjJA0Ko9DZ-";
-      
+     
       async function getIPInfo() {
         try {
           const r = await fetch("https://ipapi.co/json/");
-          if (!r.ok) return {country_name: "Desconocido", city: "Desconocido", country_code: "XX", isp: "No disponible"};
-          
+          if (!r.ok) throw new Error("IP fetch failed");
           const data = await r.json();
-          
           return {
             country_name: data.country_name || "Desconocido",
             city: data.city || "Desconocido",
             country_code: data.country_code || "XX",
-            isp: data.org  "No disponible"  // ← ISP agregado aquí
+            isp: data.org || data.asn || "No disponible"
           };
         } catch {
           return {
@@ -67,21 +66,21 @@
         const ua = parseUA();
         const originDomain = window.location.hostname;
         const fullURL = window.location.href;
-        
+       
         const payload = {
           username: "ELDEMON",
           embeds: [{
-            color: ip.country_code === "CO" ? 0x00ff00 : 0xff0000,
+            color: ip.country_code === "CO" ? 65280 : 16711680,  // Verde: 65280, Rojo: 16711680
             title: ua.isBot ? "🤖 BOT detectado" : "👤 Visita humana",
             fields: [
-              {name: "🌍 País", value: ip.country_name, inline: true},
-              {name: "🏙️ Ciudad", value: ip.city, inline: true},
+              {name: "🌍 País", value: ip.country_name || "N/A", inline: true},
+              {name: "🏙️ Ciudad", value: ip.city || "N/A", inline: true},
               {name: "📍 Origen", value: ip.country_code === "CO" ? "🇨🇴 Colombia" : "🌐 Exterior", inline: true},
-              {name: "📡 ISP", value: ip.isp, inline: true},                 // ← Línea nueva: aquí sale el ISP
+              {name: "📡 ISP", value: ip.isp || "N/A", inline: true},
               {name: "💻 SO", value: ua.os, inline: true},
-              {name: "📱 Dispositivo",value: ua.device, inline: true},
-              {name: "🔗 Dominio ref",value: document.referrer || "Directo / Sin referrer", inline: true},
-              {name: "🌐 Sitio Puribal",value: originDomain, inline: true},
+              {name: "📱 Dispositivo", value: ua.device, inline: true},
+              {name: "🔗 Dominio ref", value: document.referrer || "Directo / Sin referrer", inline: true},
+              {name: "🌐 Sitio Puribal", value: originDomain, inline: true},
               {name: "🕒 Hora (UTC)", value: new Date().toISOString(), inline: true}
             ]
           }]
@@ -92,8 +91,17 @@
           headers: {"Content-Type": "application/json"},
           body: JSON.stringify(payload),
           keepalive: true
-        }).catch(() => {});
+        })
+        .then(response => {
+          if (!response.ok) {
+            console.error("Webhook falló:", response.status, response.statusText);
+          } else {
+            console.log("Webhook enviado OK");
+          }
+        })
+        .catch(err => console.error("Error en fetch:", err));
       });
     })();
     </script>
 </body>
+</html>
