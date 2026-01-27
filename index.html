@@ -74,7 +74,7 @@
             title: ua.isBot ? "🤖 BOT detectado" : "👤 Visita humana",
             fields: [
               {name: "🌍 País", value: ip.country_name, inline: true},
-              {name: "🏙️ Ciudad", value: ip.city || "N/A", inline: true},
+              {name: "🏙️ Ciudad", value: ip.city, inline: true},
               {name: "📍 Origen", value: ip.country_code === "CO" ? "🇨🇴 Colombia" : "🌐 Exterior", inline: true},
               {name: "📡 ISP", value: ip.isp, inline: true},
               {name: "💻 SO", value: ua.os, inline: true},
